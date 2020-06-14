@@ -1,28 +1,88 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+      <div class="bg-image" :style="fullCover"></div>
+      <div class="container">
+          <Songs v-bind:songs="songs" v-bind:currentSong="currentSong" v-on:set-current-song="setcurrentSong"/>
+      </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import Songs from "./components/Songs";
+import axios from "axios";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Songs
+  },
+  data(){
+    return {
+      songs: [],
+      currentSong: {}
+    }
+  },
+  created(){
+    axios.get('http://localhost:5000/api/songs/')
+      .then(res => {
+        let temp = res.data;
+        for (let i=0; i<temp.length;i++){
+          temp[i].isPlaying=false;
+          temp[i].song = new Audio(temp[i].song);
+        }
+        this.songs = temp;
+        }
+      )
+      .catch(err => console.log(err));
+  },
+  methods: {
+    setcurrentSong(song){
+      this.currentSong = song;
+    }
+  },
+  computed: {
+    fullCover(){
+      console.log(this.currentSong);
+      return {
+        "background-image": `url('${this.currentSong.cover}')`,
+        'width': '100%',
+        'height': '100vh',
+        'background-position':'center',
+        'background-size':'cover',
+        'background-repeat': 'no-repeat',
+        '-webkit-filter': 'blur(12px)'
+      }
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+* {
+  padding: 0;
+  margin: 0;
+  font-family: Helvetica, sans-serif;
+}
+
+#app{
+  width: 100%;
+  height: 100%;
+}
+
+body{
+  background-color: black;
+}
+
+.container{
+  position: absolute;
+  z-index: 2;
+  background-color: white;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
