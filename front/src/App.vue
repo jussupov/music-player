@@ -29,7 +29,9 @@ export default {
         let temp = res.data;
         for (let i=0; i<temp.length;i++){
           temp[i].isPlaying=false;
+          temp[i].urlSong = temp[i].song;
           temp[i].song = new Audio(temp[i].song);
+
         }
         this.songs = temp;
         }
@@ -43,8 +45,8 @@ export default {
   },
   computed: {
     fullCover(){
-      console.log(this.currentSong);
       return {
+        'z-index':'-1',
         "background-image": `url('${this.currentSong.cover}')`,
         'width': '100%',
         'height': '100vh',
@@ -63,6 +65,11 @@ export default {
   padding: 0;
   margin: 0;
   font-family: Helvetica, sans-serif;
+}
+
+.bg-image{
+  background-color: black;
+  z-index: 0;
 }
 
 #app{

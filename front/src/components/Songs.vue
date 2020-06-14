@@ -1,10 +1,7 @@
 <template>
     <div class="songs">
         <h1>Songs</h1>
-        <div class="player">
-
-            {{this.currentSong.title ? `Now Playing: ${this.currentSong.title}` : 'Play music'}}
-        </div>
+        <Player v-bind:currentSong="currentSong" v-bind:songs="songs"/>
         <div v-bind:key="song.id" v-for="song in songs">
             <SongItem v-bind:song="song" v-on:play-sound="playSound"/>
         </div>
@@ -14,10 +11,11 @@
 
 <script>
 import SongItem from "./SongItem";
+import Player from "./Player";
 
 export default {
     name: "Songs",
-    components: { SongItem },
+    components: { SongItem, Player },
     props: ["songs", "currentSong"],
     methods: { 
     playSound(song){ 
@@ -27,6 +25,7 @@ export default {
                 oSong.song.pause();
                 oSong.isPlaying = false;
             }
+            oSong.song = new Audio(oSong.urlSong);
         });
         if (song.isPlaying){
             song.song.pause();
