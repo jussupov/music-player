@@ -1,7 +1,6 @@
 <template>
     <div class="songs">
-        <h1>Songs</h1>
-        <Player v-bind:currentSong="currentSong" v-bind:songs="songs"/>
+        <Player v-bind:currentSong="currentSong" v-bind:songs="songs" v-bind:time="time"/>
         <div v-bind:key="song.id" v-for="song in songs">
             <SongItem v-bind:song="song" v-on:play-sound="playSound"/>
         </div>
@@ -16,7 +15,7 @@ import Player from "./Player";
 export default {
     name: "Songs",
     components: { SongItem, Player },
-    props: ["songs", "currentSong"],
+    props: ["songs", "currentSong", "time"],
     methods: { 
     playSound(song){ 
         let oSongs = this.songs.filter(temp => temp.id != song.id)

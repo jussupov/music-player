@@ -2,7 +2,7 @@
   <div id="app">
       <div class="bg-image" :style="fullCover"></div>
       <div class="container">
-          <Songs v-bind:songs="songs" v-bind:currentSong="currentSong" v-on:set-current-song="setcurrentSong"/>
+          <Songs v-bind:songs="songs" v-bind:currentSong="currentSong" v-on:set-current-song="setcurrentSong" v-bind:time="time"/>
       </div>
   </div>
 </template>
@@ -41,13 +41,22 @@ export default {
   methods: {
     setcurrentSong(song){
       this.currentSong = song;
+      let x = this;
+      this.currentSong.song.ontimeupdate = function(){
+        x.generateTime();
+      }
+
+    },
+    generateTime(){
+      let width = (100 / this.currentSong.song.duration) * this.currentSong.song.currentTime;
+      this.time = this.currentSong.song.currentTime;
+      this.barWidth = `${width}%`;
     }
   },
   computed: {
     fullCover(){
-      return {
+      var style = {
         'z-index':'-1',
-        "background-image": `url('${this.currentSong.cover}')`,
         'width': '100%',
         'height': '100vh',
         'background-position':'center',
@@ -55,6 +64,13 @@ export default {
         'background-repeat': 'no-repeat',
         '-webkit-filter': 'blur(12px)'
       }
+      if (this.currentSong.cover){
+        style.backgroundImage = `url('${this.currentSong.cover}')`;
+      }
+      else{
+        style.backgroundImage = "url('https://m.media-amazon.com/images/G/01/digital/music/merch/2019/LandingPages/katana/subtest/Katana_Aquisition_Desktop_1_1x.jpg')";
+      }
+      return style;
     }
   }
 }
@@ -64,13 +80,10 @@ export default {
 * {
   padding: 0;
   margin: 0;
-  font-family: Helvetica, sans-serif;
+  font-family: Ubuntu, sans-serif;
 }
 
-.bg-image{
-  background-color: black;
-  z-index: 0;
-}
+
 
 #app{
   width: 100%;
